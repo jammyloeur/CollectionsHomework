@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -103,9 +104,37 @@ public class Analyzer {
 	public static Set<Word> allWords(List<Sentence> sentences) {
 
 		/* IMPLEMENT THIS METHOD! */
+		Set<Word> wordSet = new HashSet<Word>(); 
+	
+		// Return an empty set if input list is null or empty.
+		if (sentences == null || sentences.isEmpty()) {
+			return wordSet;
+		}
 		
-		return null; // this line is here only so this code will compile if you don't modify it
-
+		for (int i = 0; i < sentences.size(); i++) {
+			// Check whether sentence object is null.
+			if (sentences.get(i) == null) {
+				continue;
+			}
+			// Split sentence objects into individual words.
+			String[] tokens = sentences.get(i).text.split(" ");
+			for (int j = 0; j < tokens.length; j++) {
+				// Check whether tokens start with a letter.
+				if (!tokens[j].toLowerCase().matches("^[a-z].*$")) {
+					continue;
+				}
+				// Place valid tokens into Word objects.
+				Word currentWord = new Word(tokens[j].toLowerCase());
+				if (wordSet.contains(currentWord)) {
+					currentWord.count++;
+					currentWord.total += sentences.get(i).score;
+				} else {
+					wordSet.add(currentWord);
+				}
+			}
+		}
+		// Return to calling method.
+		return wordSet; 
 	}
 	
 	/*
