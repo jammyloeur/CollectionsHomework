@@ -3,7 +3,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -116,7 +118,7 @@ public class Analyzer {
 			if (sentences.get(i) == null) {
 				continue;
 			}
-			// Split sentence objects into individual words.
+			// Split Sentence objects into individual words.
 			String[] tokens = sentences.get(i).text.split(" ");
 			for (int j = 0; j < tokens.length; j++) {
 				// Check whether tokens start with a letter.
@@ -143,9 +145,31 @@ public class Analyzer {
 	public static Map<String, Double> calculateScores(Set<Word> words) {
 
 		/* IMPLEMENT THIS METHOD! */
+		Map<String, Double> sentimentMap = new HashMap<String, Double>();
 		
-		return null; // this line is here only so this code will compile if you don't modify it
-
+		// Check whether input is null.
+		if (words == null) {
+			return sentimentMap;
+		}
+		
+		// Check whether Set is empty.
+		if (words.isEmpty()) {
+			return sentimentMap;
+		}
+		
+		Iterator<Word> iterator = words.iterator();
+		
+		while (iterator.hasNext()) {
+			double avgScore = 0.0;
+			Word currentWord = iterator.next();
+			if (currentWord == null) {
+				continue;
+			}
+			avgScore = currentWord.calculateScore();
+			sentimentMap.put(currentWord.text, avgScore);
+		}
+		// Return to calling method.
+		return sentimentMap; 
 	}
 	
 	/*
@@ -175,7 +199,7 @@ public class Analyzer {
 		in.close();
 		List<Sentence> sentences = Analyzer.readFile(filename);
 		Set<Word> words = Analyzer.allWords(sentences);
-		Map<String, Double> wordScores = Analyzer.calculateScores(words);
+		Map<String, Double> wordScores = Analyzer.calculateScores(null);
 		double score = Analyzer.calculateSentenceScore(wordScores, sentence);
 		System.out.println("The sentiment score is " + score);
 	}
