@@ -176,10 +176,50 @@ public class Analyzer {
 	 * Implement this method in Part 4
 	 */
 	public static double calculateSentenceScore(Map<String, Double> wordScores, String sentence) {
-
-		/* IMPLEMENT THIS METHOD! */
 		
-		return 0; // this line is here only so this code will compile if you don't modify it
+		/* IMPLEMENT THIS METHOD! */
+		double sentenceScore = 0.0;
+		int numValidTokens = 0;
+		double totalSentimentScore = 0.0;
+		
+		if (wordScores == null || wordScores.isEmpty()) {
+			return 0;
+		}
+		
+		if (sentence == null || sentence.isEmpty()) {
+			return 0;
+		}
+		
+		// Split Sentence objects into individual words.
+		String[] tokens = sentence.split(" ");
+		
+		for (int i = 0; i < tokens.length; i++) {
+			// Check whether tokens start with a letter.
+			if (!tokens[i].toLowerCase().matches("^[a-z].*$")) {
+				continue;
+			}
+			// Place valid tokens into Word objects.
+			String currentWord = tokens[i].toLowerCase();
+			// Check whether word is contained in Map.
+			if (wordScores.containsKey(currentWord)) {
+				sentenceScore += (double) wordScores.get(currentWord);
+				numValidTokens++;
+			} else {
+				// Assign 0 to unseen words.
+				numValidTokens++;
+			}
+		}
+		
+		// Return 0 if their are no valid words in sentence.
+		if (numValidTokens == 0) {
+			return 0;
+		}
+		
+		// Calculate total sentiment of sentence.
+		totalSentimentScore = sentenceScore / (double) numValidTokens;
+		
+		// Return score to calling method.
+		return totalSentimentScore; 
 
 	}
 	
@@ -199,7 +239,7 @@ public class Analyzer {
 		in.close();
 		List<Sentence> sentences = Analyzer.readFile(filename);
 		Set<Word> words = Analyzer.allWords(sentences);
-		Map<String, Double> wordScores = Analyzer.calculateScores(null);
+		Map<String, Double> wordScores = Analyzer.calculateScores(words);
 		double score = Analyzer.calculateSentenceScore(wordScores, sentence);
 		System.out.println("The sentiment score is " + score);
 	}
